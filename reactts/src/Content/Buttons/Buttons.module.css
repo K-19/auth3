@@ -1,0 +1,21 @@
+.buttonPanel {
+    width: 85%;
+    text-align: center;
+}
+
+.buttonPanel button {
+    font-size: 19px;
+    width: 48%;
+    min-height: 50px;
+    padding-left: 5%;
+    padding-right: 5%;
+    font-family: "Comic Sans MS", cursive, sans-serif
+}
+
+.regButton {
+    float: left;
+}
+
+.passButton {
+    float: right;
+}

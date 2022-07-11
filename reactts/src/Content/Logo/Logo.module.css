@@ -1,0 +1,10 @@
+.logo {
+    height: 40%;
+    width: 85%;
+    text-align: center;
+}
+
+.logo img {
+    height: 100%;
+    margin: auto;
+}
