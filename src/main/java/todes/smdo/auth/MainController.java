@@ -1,55 +1,66 @@
 package todes.smdo.auth;
 
-package com.okta.developer.jugtours.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 class MainController {
+    List<UserData> users = new ArrayList<>();
+
+    {
+        users.add(new UserData("sergey", "k19", "acc", "passSmdo", "testAga"));
+        users.add(new UserData("todes", "todes", null, null, null));
+        users.add(new UserData("admin", "admin", null, null, null));
+    }
+
 
     private final Logger log = LoggerFactory.getLogger(MainController.class);
 
-    @GetMapping("/groups")
-    Collection<Group> groups() {
-        return groupRepository.findAll();
-    }
-
-    @GetMapping("/group/{id}")
-    ResponseEntity<?> getGroup(@PathVariable Long id) {
-        Optional<Group> group = groupRepository.findById(id);
-        return group.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @PostMapping("/group")
-    ResponseEntity<Group> createGroup(@Valid @RequestBody Group group) throws URISyntaxException {
-        log.info("Request to create group: {}", group);
-        Group result = groupRepository.save(group);
-        return ResponseEntity.created(new URI("/api/group/" + result.getId()))
-                .body(result);
-    }
-
-    @PutMapping("/group/{id}")
-    ResponseEntity<Group> updateGroup(@Valid @RequestBody Group group) {
-        log.info("Request to update group: {}", group);
-        Group result = groupRepository.save(group);
-        return ResponseEntity.ok().body(result);
-    }
-
-    @DeleteMapping("/group/{id}")
-    public ResponseEntity<?> deleteGroup(@PathVariable Long id) {
-        log.info("Request to delete group: {}", id);
-        groupRepository.deleteById(id);
+    @PostMapping(value = "/test")
+    @ResponseBody
+    public ResponseEntity<Object> test(@Valid @RequestBody UserData userData) throws URISyntaxException {
+        log.info("Request to create group: {}", userData);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/login")
+    @ResponseBody
+    public ResponseEntity<UserData> login(@Valid @RequestBody UserData userData) throws URISyntaxException {
+        for (UserData user : users) {
+            if (user.getLoginSED().equals(userData.getLoginSED()) && user.getPassword().equals(userData.getPassword()))
+                return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value = "/reg")
+    @ResponseBody
+    public ResponseEntity<UserData> reg(@Valid @RequestBody UserData userData) throws URISyntaxException {
+        if (userData == null ||
+                userData.getLoginSED() == null || userData.getLoginSED().isEmpty() ||
+                userData.getPassword() == null || userData.getPassword().isEmpty() ||
+                userData.getAccountSMDO() == null || userData.getAccountSMDO().isEmpty() ||
+                userData.getPasswordAccountSMDO() == null || userData.getPasswordAccountSMDO().isEmpty() ||
+                userData.getTestWord() == null || userData.getTestWord().isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        for (UserData user : users) {
+            if (user.getLoginSED().equals(userData.getLoginSED()) && user.getPassword().equals(userData.getPassword()))
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        ;
+        users.add(userData);
+        return new ResponseEntity<>(users.get(users.size() - 1), HttpStatus.OK);
     }
 }

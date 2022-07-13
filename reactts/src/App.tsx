@@ -7,6 +7,7 @@ import RegPanel from "./RegPanel/RegPanel";
 import PassResetPanel from "./PassResetPanel/PassResetPanel";
 
 function App() {
+
     const [regModalActive, setRegModalActive] = useState(false);
     const [passResetModalActive, setPassResetModalActive] = useState(false);
     return (
