@@ -88,7 +88,7 @@ async function registration() {
     const url = properties.serverUrl + "/api/reg";
     try {
         const response = await fetch(url, {
-            method: 'POST', // или 'PUT'
+            method: 'POST',
             body: JSON.stringify(userData),
             headers: {
                 'Content-Type': 'application/json'

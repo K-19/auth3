@@ -28,16 +28,10 @@ class MainController {
 
     private final Logger log = LoggerFactory.getLogger(MainController.class);
 
-    @PostMapping(value = "/test")
+    @PostMapping("/login")
     @ResponseBody
-    public ResponseEntity<Object> test(@Valid @RequestBody UserData userData) throws URISyntaxException {
-        log.info("Request to create group: {}", userData);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping(value = "/login")
-    @ResponseBody
-    public ResponseEntity<UserData> login(@Valid @RequestBody UserData userData) throws URISyntaxException {
+    public ResponseEntity<UserData> login(@Valid @RequestBody UserData userData)
+            throws URISyntaxException {
         for (UserData user : users) {
             if (user.getLoginSED().equals(userData.getLoginSED()) && user.getPassword().equals(userData.getPassword()))
                 return new ResponseEntity<>(user, HttpStatus.OK);
@@ -45,9 +39,10 @@ class MainController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping(value = "/reg")
+    @PostMapping("/reg")
     @ResponseBody
-    public ResponseEntity<UserData> reg(@Valid @RequestBody UserData userData) throws URISyntaxException {
+    public ResponseEntity<UserData> reg(@Valid @RequestBody UserData userData)
+            throws URISyntaxException {
         if (userData == null ||
                 userData.getLoginSED() == null || userData.getLoginSED().isEmpty() ||
                 userData.getPassword() == null || userData.getPassword().isEmpty() ||
@@ -62,5 +57,30 @@ class MainController {
         ;
         users.add(userData);
         return new ResponseEntity<>(users.get(users.size() - 1), HttpStatus.OK);
+    }
+
+    @PostMapping("/word")
+    @ResponseBody
+    public ResponseEntity<UserData> testWord(@Valid @RequestBody UserData userData)
+            throws URISyntaxException {
+        for (UserData user : users) {
+            if (user.getLoginSED().equals(userData.getLoginSED()) && user.getTestWord().equals(userData.getTestWord())) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/resetPass")
+    @ResponseBody
+    public ResponseEntity<UserData> resetPass(@Valid @RequestBody UserData userData)
+            throws URISyntaxException {
+        for (UserData user : users) {
+            if (user.getLoginSED().equals(userData.getLoginSED())) {
+                user.setPassword(userData.getPassword());
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }

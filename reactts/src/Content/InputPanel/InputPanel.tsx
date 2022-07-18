@@ -44,7 +44,7 @@ async function login() {
     const url = properties.serverUrl + "/api/login";
     try {
         const response = await fetch(url, {
-            method: 'POST', // или 'PUT'
+            method: 'POST',
             body: JSON.stringify(userData),
             headers: {
                 'Content-Type': 'application/json'
